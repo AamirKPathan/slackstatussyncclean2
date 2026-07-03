@@ -1,10 +1,8 @@
 import express from "express";
 import fetch from "node-fetch";
-import dotenv from "dotenv";
 
-if (process.env.NODE_ENV !== "production") {
-  import dotenv from "dotenv";
-  dotenv.config();
+if (process.env.RAILWAY_ENVIRONMENT !== "production") {
+  await import("./local-env.js");
 }
 
 const app = express();
