@@ -3,10 +3,12 @@ const router = express.Router();
 const axios = require("axios");
 const fs = require("fs");
 
+// Slack credentials from Railway
 const CLIENT_ID = process.env.SLACK_CLIENT_ID;
 const CLIENT_SECRET = process.env.SLACK_CLIENT_SECRET;
-const BASE_URL = process.env.SLACK_APP_URL || process.env.APP_URL || "http://localhost:3000";
-const REDIRECT_URI = `${BASE_URL.replace(/\/$/, "")}/oauth/callback`;
+
+// Your REAL Railway domain — hard‑coded so Slack always matches it
+const REDIRECT_URI = "https://slackstatussyncclean2-production.up.railway.app/oauth/callback";
 
 // Step 1: Redirect user to Slack OAuth
 router.get("/slack", (req, res) => {
