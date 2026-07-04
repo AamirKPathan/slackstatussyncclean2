@@ -8,7 +8,7 @@ if (process.env.RAILWAY_ENVIRONMENT !== "production") {
 const app = express();
 const PORT = process.env.PORT || 8080;
 
-// Hard-coded redirect URL (Railway does NOT provide this automatically)
+// Hard-coded redirect URL
 const REDIRECT_URI = "https://slackstatussyncclean2-production.up.railway.app/oauth/callback";
 
 // Route to start Slack OAuth
