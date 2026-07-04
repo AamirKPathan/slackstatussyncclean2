@@ -2,15 +2,20 @@ import fs from "fs";
 import axios from "axios";
 import path from "path";
 
-// Change this to a REAL Windows folder path
-const WATCH_FOLDER = "C:\\Users\\gamin\\OneDrive\\Desktop"; 
+const VSCODE_STATE = path.join(
+  process.env.APPDATA,
+  "Code",
+  "User",
+  "globalStorage",
+  "state.json"
+);
 
-let lastStatus = "";
+let lastFolder = "";
 
 // Send status to your backend
 async function updateSlackStatus(folderName) {
-  if (folderName === lastStatus) return;
-  lastStatus = folderName;
+  if (folderName === lastFolder) return;
+  lastFolder = folderName;
 
   try {
     await axios.post(
@@ -27,19 +32,33 @@ async function updateSlackStatus(folderName) {
   }
 }
 
-// Scan the folder
-function scanFolder() {
+// Read VS Code active folder
+function getActiveVSCodeFolder() {
   try {
-    const items = fs.readdirSync(WATCH_FOLDER);
-    const activeItem = items[0] || "Unknown";
+    const raw = fs.readFileSync(VSCODE_STATE, "utf8");
+    const json = JSON.parse(raw);
 
-    updateSlackStatus(activeItem);
+    const list = json.openedPathsList?.workspaces3;
+
+    if (!list || list.length === 0) return null;
+
+    // VS Code stores paths like: file:///c:/Users/gamin/Desktop/Project
+    const uri = list[0];
+    const folderPath = uri.replace("file:///", "").replace(/\//g, "\\");
+
+    const folderName = path.basename(folderPath);
+
+    return folderName;
   } catch (err) {
     console.error("Watcher error:", err.message);
+    return null;
   }
 }
 
 // Check every 5 seconds
-setInterval(scanFolder, 5000);
+setInterval(() => {
+  const folder = getActiveVSCodeFolder();
+  if (folder) updateSlackStatus(folder);
+}, 5000);
 
-console.log("Watcher started. Monitoring:", WATCH_FOLDER);
+console.log("Automatic VS Code folder tracking started.");
