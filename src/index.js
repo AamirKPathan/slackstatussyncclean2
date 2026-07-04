@@ -8,23 +8,37 @@ if (process.env.RAILWAY_ENVIRONMENT !== "production") {
 const app = express();
 const PORT = process.env.PORT || 8080;
 
-// Hard-coded redirect URL (Railway does NOT provide this automatically)
+// Hard-coded redirect URL
 const REDIRECT_URI = "https://slackstatussyncclean2-production.up.railway.app/oauth/callback";
 
-// Route to start Slack OAuth
+// --- LOGGING TO CONFIRM ROUTES ARE HIT ---
+app.use((req, res, next) => {
+  console.log("Incoming request:", req.method, req.url);
+  next();
+});
+
+// --- ROUTE: START SLACK OAUTH ---
 app.get("/oauth/slack", (req, res) => {
+  console.log("HIT /oauth/slack");
+
   const params = new URLSearchParams({
     client_id: process.env.SLACK_CLIENT_ID,
     user_scope: "users.profile:read,users.profile:write",
     redirect_uri: REDIRECT_URI
   });
 
-  res.redirect(`https://slack.com/oauth/v2/authorize?${params.toString()}`);
+  const slackURL = `https://slack.com/oauth/v2/authorize?${params.toString()}`;
+  console.log("Redirecting to Slack:", slackURL);
+
+  res.redirect(slackURL);
 });
 
-// Route Slack redirects back to
+// --- ROUTE: SLACK CALLBACK ---
 app.get("/oauth/callback", async (req, res) => {
+  console.log("HIT /oauth/callback");
+
   const code = req.query.code;
+  console.log("Received code:", code);
 
   if (!code) {
     return res.status(400).send("Missing code parameter.");
@@ -43,19 +57,19 @@ app.get("/oauth/callback", async (req, res) => {
   });
 
   const data = await response.json();
+  console.log("Slack OAuth response:", data);
 
   if (!data.ok) {
-    console.error("Slack OAuth error:", data);
     return res.status(500).send("Slack OAuth failed.");
   }
 
   const userToken = data.authed_user.access_token;
-
   console.log("User Slack Token:", userToken);
 
   res.send("SlackStatusSync installed successfully!");
 });
 
+// --- START SERVER ---
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
