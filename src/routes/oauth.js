@@ -1,60 +1,17 @@
-const express = require("express");
-const router = express.Router();
-const axios = require("axios");
-const fs = require("fs");
+import express from "express";
+import dotenv from "dotenv";
 
-// Slack credentials from Railway
-const CLIENT_ID = process.env.SLACK_CLIENT_ID;
-const CLIENT_SECRET = process.env.SLACK_CLIENT_SECRET;
+dotenv.config();
 
-// Your REAL Railway domain — hard‑coded so Slack always matches it
-const REDIRECT_URI = "https://slackstatussyncclean2-production.up.railway.app/oauth/callback";
+const app = express();
+const PORT = process.env.PORT || 8080;
 
-// Step 1: Redirect user to Slack OAuth
-router.get("/slack", (req, res) => {
-  const redirect = "https://slack.com/oauth/v2/authorize"
-    + `?client_id=${CLIENT_ID}`
-    + "&scope=users.profile:write"
-    + "&user_scope=users.profile:write"
-    + `&redirect_uri=${encodeURIComponent(REDIRECT_URI)}`;
+app.use(express.json());
 
-  res.redirect(redirect);
+// Mount OAuth routes
+import oauthRoutes from "./routes/oauth.js";
+app.use("/oauth", oauthRoutes);
+
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
 });
-
-// Step 2: Slack sends the temporary code here
-router.get("/callback", async (req, res) => {
-  const code = req.query.code;
-
-  if (!code) {
-    return res.status(400).send("Missing code");
-  }
-
-  try {
-    const response = await axios.post(
-      "https://slack.com/api/oauth.v2.access",
-      null,
-      {
-        params: {
-          client_id: CLIENT_ID,
-          client_secret: CLIENT_SECRET,
-          code,
-          redirect_uri: REDIRECT_URI
-        }
-      }
-    );
-
-    const token = response.data.authed_user.access_token;
-
-    // Save token
-    const data = JSON.parse(fs.readFileSync("./src/db/activity.json", "utf8"));
-    data.slackToken = token;
-    fs.writeFileSync("./src/db/activity.json", JSON.stringify(data, null, 2));
-
-    res.send("Slack connected! You can close this window.");
-  } catch (err) {
-    console.error(err);
-    res.status(500).send("OAuth failed");
-  }
-});
-
-module.exports = router;
