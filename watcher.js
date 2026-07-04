@@ -1,33 +1,45 @@
 import fs from "fs";
-import path from "path";
 import axios from "axios";
+import path from "path";
 
-// Change this to the folder you want to watch
-const WATCH_FOLDER = "/Users/aamir/Projects";
+// Change this to a REAL Windows folder path
+const WATCH_FOLDER = "C:\\Users\\gamin\\OneDrive\\Desktop"; 
 
 let lastStatus = "";
 
-function updateStatus(folderName) {
+// Send status to your backend
+async function updateSlackStatus(folderName) {
   if (folderName === lastStatus) return;
   lastStatus = folderName;
 
-  axios.post("https://slackstatussyncclean2-production.up.railway.app/slack/status", {
-    text: `Working in ${folderName}`,
-    emoji: ":computer:"
-  }).catch(err => {
+  try {
+    await axios.post(
+      "https://slackstatussyncclean2-production.up.railway.app/slack/status",
+      {
+        text: `Working in ${folderName}`,
+        emoji: ":computer:"
+      }
+    );
+
+    console.log(`Updated Slack status: Working in ${folderName}`);
+  } catch (err) {
     console.error("Failed to update Slack:", err.message);
-  });
+  }
 }
 
-function scan() {
+// Scan the folder
+function scanFolder() {
   try {
     const items = fs.readdirSync(WATCH_FOLDER);
-    const active = items[0] || "Unknown";
+    const activeItem = items[0] || "Unknown";
 
-    updateStatus(active);
+    updateSlackStatus(activeItem);
   } catch (err) {
     console.error("Watcher error:", err.message);
   }
 }
 
-setInterval(scan, 5000); // check every 5 seconds
+// Check every 5 seconds
+setInterval(scanFolder, 5000);
+
+console.log("Watcher started. Monitoring:", WATCH_FOLDER);
