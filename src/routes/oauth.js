@@ -50,14 +50,20 @@ router.get("/callback", async (req, res) => {
     console.log("Slack OAuth response:", response.data);
 
     const token = response.data.authed_user?.access_token;
+    console.log("Extracted user token:", token);
+
+    // Show the exact file path being written
+    const filePath = fs.realpathSync("./src/db/activity.json");
+    console.log("Saving token to:", filePath);
 
     if (!token) {
-      return res.status(500).send("OAuth failed: No user token returned");
+      console.log("No token returned — NOT saving.");
+      return res.status(500).send("OAuth failed: Slack did not return a user token.");
     }
 
-    const data = JSON.parse(fs.readFileSync("./src/db/activity.json", "utf8"));
+    const data = JSON.parse(fs.readFileSync(filePath, "utf8"));
     data.slackToken = token;
-    fs.writeFileSync("./src/db/activity.json", JSON.stringify(data, null, 2));
+    fs.writeFileSync(filePath, JSON.stringify(data, null, 2));
 
     res.send("Slack connected! You can close this window.");
   } catch (err) {
