@@ -10,7 +10,7 @@ No manual updates. No clicking. Just automatic status based on your current proj
 
 ## Features
 
-- \*\*Automatic Desktop folder tracking\*\*  
+- **Automatic Desktop folder tracking\*\*  
 \- \*\*VS Code friendly\*\*  
 \- \*\*Instant Slack updates\*\*  
 \- \*\*Runs locally and safely\*\*  
