@@ -1,5 +1,10 @@
 # SlackStatusSync Agent
 
+![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)
+![Node.js](https://img.shields.io/badge/Node.js-Required-green?logo=node.js)
+![Status: Active](https://img.shields.io/badge/Status-Active-brightgreen)
+![Backend](https://img.shields.io/badge/Backend-Railway-blue?logo=railway)
+
 SlackStatusSync Agent automatically updates your Slack status based on which folder on your Desktop you are actively working in. When you open or edit a project folder on your Desktop (especially in VS Code), your Slack status becomes:
 
 **Working in <folder name>**
