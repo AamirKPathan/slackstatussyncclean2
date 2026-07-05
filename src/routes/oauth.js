@@ -9,9 +9,18 @@ const CLIENT_SECRET = process.env.SLACK_CLIENT_SECRET;
 
 const REDIRECT_URI = "https://slackstatussyncclean2-production.up.railway.app/oauth/callback";
 
+// Validate environment variables
+if (!CLIENT_ID || !CLIENT_SECRET) {
+  console.error("ERROR: SLACK_CLIENT_ID or SLACK_CLIENT_SECRET is not set!");
+}
+
 // Step 1: Redirect user to Slack OAuth
 router.get("/slack", (req, res) => {
   console.log("HIT /oauth/slack");
+
+  if (!CLIENT_ID) {
+    return res.status(500).send("Missing SLACK_CLIENT_ID environment variable");
+  }
 
   const redirect = "https://slack.com/oauth/v2/authorize"
     + `?client_id=${CLIENT_ID}`
@@ -25,6 +34,10 @@ router.get("/slack", (req, res) => {
 // Step 2: Slack sends the temporary code here
 router.get("/callback", async (req, res) => {
   console.log("HIT /oauth/callback");
+
+  if (!CLIENT_SECRET) {
+    return res.status(500).send("Missing SLACK_CLIENT_SECRET environment variable");
+  }
 
   const code = req.query.code;
   console.log("Received code:", code);
