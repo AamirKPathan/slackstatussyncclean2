@@ -20,12 +20,86 @@ No manual updates. No clicking. Just automatic status based on your current proj
 
 ## Requirements
 
-- Node.js installed  
-- SlackStatusSync backend deployed  
-- Slack app with:  
-  - `users.profile:write`  
-  - `users.profile:read`  
-- Slack OAuth connected to your backend
+Before running SlackStatusSync Agent, make sure you have:
+
+1. **Node.js** installed  
+   - Download it from [https://nodejs.org](https://nodejs.org)  
+   - Choose the **LTS version** (recommended for stability)  
+   - Follow the installer prompts and restart your computer if needed  
+
+2. **SlackStatusSync backend** deployed  
+   - You can host it on [Railway](https://railway.app) or any Node.js‑compatible hosting service  
+   - The backend must expose an endpoint like:  
+     `https://your-backend-url/slack/status`
+
+3. **Slack app** connected to your workspace  
+   - Go to [https://api.slack.com/apps](https://api.slack.com/apps)  
+   - Create a new app or use an existing one  
+   - Add these permissions under **OAuth & Permissions**:  
+     - `users.profile:write`  
+     - `users.profile:read`  
+   - Reinstall the app to your workspace after adding permissions  
+
+4. **Slack OAuth connection**  
+   - Visit your SlackStatusSync website  
+   - Click **Connect Slack**  
+   - Complete the authorization flow  
+
+---
+
+## Files You Need
+
+Your project folder should contain:
+
+```
+SlackStatusSync/
+├── watcher.js
+├── package.json
+```
+
+### watcher.js
+This is the local script that:
+- Watches your Desktop folders
+- Detects the most recently active folder
+- Sends updates to your backend
+
+### package.json
+This file defines dependencies and project info.  
+It should include at least:
+
+```json
+{
+  "name": "slackstatussync",
+  "version": "1.0.0",
+  "main": "watcher.js",
+  "dependencies": {
+    "axios": "^1.6.0"
+  }
+}
+```
+
+---
+
+## Download and Setup
+
+1. **Create a folder on your Desktop**
+   ```
+   C:\Users\gamin\OneDrive\Desktop\SlackStatusSync
+   ```
+
+2. **Download the files**
+   - Copy `watcher.js` and `package.json` into that folder  
+   - Or clone from your repository:
+     ```
+     git clone https://github.com/yourusername/SlackStatusSync.git
+     ```
+
+3. **Install dependencies**
+   Open PowerShell or Command Prompt in that folder:
+   ```
+   cd C:\Users\gamin\OneDrive\Desktop\SlackStatusSync
+   npm install
+   ```
 
 ---
 
@@ -49,18 +123,6 @@ Change it if your Desktop is somewhere else.
 4. It finds the folder with the newest modified time.  
 5. It sends that folder name to your backend.  
 6. Your backend updates your Slack status.
-
----
-
-## Installation
-
-1. Place `watcher.js` and `package.json` in a folder.  
-2. Open a terminal in that folder.  
-3. Run:
-
-```
-npm install
-```
 
 ---
 
@@ -118,44 +180,3 @@ SlackStatusSync Agent does not read your files, upload your code, track activity
 ## License
 
 MIT License
-
----
-
-# Step-by-Step Setup
-
-## Step 1: Put the project on your Desktop
-Create a folder named `SlackStatusSync` on your Desktop.  
-Place `watcher.js` and `package.json` inside it.
-
-## Step 2: Install dependencies
-Open PowerShell in that folder and run:
-```
-npm install
-```
-
-## Step 3: Connect Slack
-Go to your SlackStatusSync website.  
-Click “Connect Slack”.  
-Complete OAuth.  
-Ensure your Slack app has:
-- `users.profile:write`
-- `users.profile:read`
-
-## Step 4: Set your Desktop path
-Open `watcher.js`.  
-Find:
-```js
-const DESKTOP = "C:\\Users\\gamin\\OneDrive\\Desktop";
-```
-Change it if your Desktop is somewhere else.
-
-## Step 5: Run the watcher
-```
-node watcher.js
-```
-
-## Step 6: Open a folder on your Desktop in VS Code
-Your Slack status will update automatically.
-
-## Step 7: Keep the watcher running
-Leave the terminal open while you work.
