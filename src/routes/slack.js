@@ -29,12 +29,17 @@ router.post("/status", async (req, res) => {
       return res.status(400).send("No Slack token saved.");
     }
 
+    // Clean up emoji format - remove colons if present
+    const cleanEmoji = emoji ? emoji.replace(/:/g, '') : 'computer';
+
+    console.log(`Updating Slack with text: "${text}", emoji: "${cleanEmoji}"`);
+
     const response = await axios.post(
       "https://slack.com/api/users.profile.set",
       {
         profile: {
           status_text: text,
-          status_emoji: emoji
+          status_emoji: `:${cleanEmoji}:`
         }
       },
       {
@@ -45,10 +50,20 @@ router.post("/status", async (req, res) => {
       }
     );
 
+    console.log("Slack response:", response.data);
+
+    if (!response.data.ok) {
+      console.error("Slack API error:", response.data.error);
+      return res.status(400).json({ ok: false, error: response.data.error });
+    }
+
     res.json(response.data);
   } catch (err) {
-    console.error("Slack status update error:", err.response?.data || err);
-    res.status(500).send("Failed to update Slack status.");
+    console.error("Slack status update error:", err.response?.data || err.message);
+    res.status(500).json({ 
+      ok: false, 
+      error: err.response?.data?.error || err.message 
+    });
   }
 });
 
