@@ -1,4 +1,4 @@
-const axios = require("axios");
+import axios from "axios";
 
 async function updateSlackStatus(token, text) {
   try {
@@ -25,4 +25,4 @@ async function updateSlackStatus(token, text) {
   }
 }
 
-module.exports = { updateSlackStatus };
+export { updateSlackStatus };
