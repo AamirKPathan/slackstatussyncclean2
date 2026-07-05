@@ -1,16 +1,16 @@
-\# SlackStatusSync Agent
+# SlackStatusSync Agent
 
 SlackStatusSync Agent automatically updates your Slack status based on which folder on your Desktop you are actively working in. When you open or edit a project folder on your Desktop (especially in VS Code), your Slack status becomes:
 
-\`Working in \<folder name>\`
+`Working in \<folder name>\`
 
 No manual updates. No clicking. Just automatic status based on your current project.
 
 ---
 
-\## Features
+## Features
 
-\- \*\*Automatic Desktop folder tracking\*\*  
+- \*\*Automatic Desktop folder tracking\*\*  
 \- \*\*VS Code friendly\*\*  
 \- \*\*Instant Slack updates\*\*  
 \- \*\*Runs locally and safely\*\*  
