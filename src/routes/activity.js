@@ -1,9 +1,10 @@
-const express = require("express");
-const fs = require("fs");
+import express from "express";
+import fs from "fs";
+import { updateSlackStatus } from "../services/slack.js";
+
 const router = express.Router();
 
 const DB_PATH = "./src/db/activity.json";
-const { updateSlackStatus } = require("../services/slack");
 
 // GET /activity
 router.get("/", (req, res) => {
@@ -44,4 +45,4 @@ router.post("/", async (req, res) => {
   res.json({ ok: true, activity: newActivity });
 });
 
-module.exports = router;
+export default router;

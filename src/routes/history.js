@@ -1,5 +1,6 @@
-const express = require("express");
-const fs = require("fs");
+import express from "express";
+import fs from "fs";
+
 const router = express.Router();
 
 const DB_PATH = "./src/db/activity.json";
@@ -22,4 +23,4 @@ router.get("/", (req, res) => {
     })
 });
 
-module.exports = router;
+export default router;
