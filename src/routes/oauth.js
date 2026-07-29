@@ -6,8 +6,9 @@ const router = express.Router();
 
 const CLIENT_ID = process.env.SLACK_CLIENT_ID;
 const CLIENT_SECRET = process.env.SLACK_CLIENT_SECRET;
-
-const REDIRECT_URI = "https://slackstatussyncclean2-production.up.railway.app/oauth/callback";
+const REDIRECT_URI =
+  process.env.SLACK_REDIRECT_URI ||
+  "https://slackstatussyncclean2-production.up.railway.app/oauth/callback";
 
 // Validate environment variables
 if (!CLIENT_ID || !CLIENT_SECRET) {

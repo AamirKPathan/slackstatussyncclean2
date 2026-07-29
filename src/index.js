@@ -8,6 +8,14 @@ const PORT = process.env.PORT || 8080;
 
 app.use(express.json());
 
+app.get("/", (req, res) => {
+  res.json({ ok: true, service: "SlackStatusSync" });
+});
+
+app.get("/health", (req, res) => {
+  res.json({ ok: true });
+});
+
 // OAuth routes
 import oauthRoutes from "./routes/oauth.js";
 app.use("/oauth", oauthRoutes);
