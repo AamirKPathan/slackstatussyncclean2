@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>SlackStatusSync Docs</title>
+    <style>
+      body {
+        max-width: 860px;
+        margin: 40px auto;
+        padding: 0 20px;
+        color: #18202a;
+        font-family: Arial, sans-serif;
+        line-height: 1.55;
+      }
+
+      h1,
+      h2 {
+        line-height: 1.2;
+      }
+
+      code,
+      pre {
+        background: #f4f6f8;
+        border-radius: 6px;
+        font-family: Consolas, monospace;
+      }
+
+      code {
+        padding: 2px 4px;
+      }
+
+      pre {
+        overflow-x: auto;
+        padding: 14px;
+      }
+
+      table {
+        border-collapse: collapse;
+        width: 100%;
+      }
+
+      th,
+      td {
+        border-bottom: 1px solid #d8dee5;
+        padding: 10px;
+        text-align: left;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>SlackStatusSync Docs</h1>
+    <p>
+      SlackStatusSync uses a local watcher plus a Cloudflare Worker backend to
+      update Slack status from Desktop folder activity.
+    </p>
+
+    <h2>Production Backend</h2>
+    <pre>https://slackstatussyncclean2.programmingpathanaa.workers.dev</pre>
+
+    <h2>Flow</h2>
+    <pre>watcher.js -> Cloudflare Worker -> Workers KV -> Slack API</pre>
+
+    <h2>Cloudflare Settings</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Purpose</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><code>STATUS_STORE</code></td>
+          <td>Workers KV binding</td>
+          <td>Stores Slack token and current status.</td>
+        </tr>
+        <tr>
+          <td><code>SLACK_CLIENT_ID</code></td>
+          <td>Text</td>
+          <td>Slack app Client ID.</td>
+        </tr>
+        <tr>
+          <td><code>SLACK_CLIENT_SECRET</code></td>
+          <td>Secret</td>
+          <td>Slack app Client Secret.</td>
+        </tr>
+        <tr>
+          <td><code>SLACK_REDIRECT_URI</code></td>
+          <td>Text</td>
+          <td>Slack OAuth callback URL.</td>
+        </tr>
+        <tr>
+          <td><code>WATCHER_API_KEY</code></td>
+          <td>Secret</td>
+          <td>Protects the status update endpoint.</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h2>Endpoints</h2>
+    <pre>GET  /health
+GET  /oauth/slack
+GET  /slack/token
+GET  /status
+POST /slack/status</pre>
+
+    <h2>Local .env</h2>
+    <pre>BACKEND_URL=https://slackstatussyncclean2.programmingpathanaa.workers.dev
+WATCHER_API_KEY=the-same-key-used-in-cloudflare</pre>
+  </body>
+</html>
