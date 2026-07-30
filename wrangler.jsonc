@@ -1,0 +1,9 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "slackstatussync2",
+  "main": "src/worker.js",
+  "compatibility_date": "2026-07-30",
+  "observability": {
+    "enabled": true
+  }
+}

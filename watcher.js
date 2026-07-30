@@ -1,9 +1,16 @@
 import fs from "fs";
 import axios from "axios";
 import path from "path";
+import dotenv from "dotenv";
+
+dotenv.config();
 
 // Your Desktop path
 const DESKTOP = "C:\\Users\\gamin\\OneDrive\\Desktop";
+const BACKEND_URL =
+  process.env.BACKEND_URL ||
+  "https://slackstatussyncclean2-production.up.railway.app";
+const WATCHER_API_KEY = process.env.WATCHER_API_KEY;
 
 let lastFolder = "";
 
@@ -14,10 +21,15 @@ async function updateSlackStatus(folderName) {
 
   try {
     await axios.post(
-      "https://slackstatussyncclean2-production.up.railway.app/slack/status",
+      `${BACKEND_URL.replace(/\/$/, "")}/slack/status`,
       {
         text: `Working in ${folderName}`,
         emoji: ":computer:"
+      },
+      {
+        headers: WATCHER_API_KEY
+          ? { Authorization: `Bearer ${WATCHER_API_KEY}` }
+          : {}
       }
     );
 
