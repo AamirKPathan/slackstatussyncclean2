@@ -1,8 +1,14 @@
 {
   "$schema": "node_modules/wrangler/config-schema.json",
-  "name": "slackstatussync2",
+  "name": "slackstatussyncclean2",
   "main": "src/worker.js",
   "compatibility_date": "2026-07-30",
+  "kv_namespaces": [
+    {
+      "binding": "STATUS_STORE",
+      "id": "6b5fe272b73f49debb1745b929671e7b"
+    }
+  ],
   "observability": {
     "enabled": true
   }
